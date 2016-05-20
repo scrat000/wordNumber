@@ -61,32 +61,54 @@ public class WordNumber {
 
     };
 
-    private String word;
-    private String number;
-    private StringBuilder stringBuilder;
 
-    public WordNumber(String word, String number) {
-        Integer.parseInt(number);
-        this.word = word;
-        this.number = number;
-        stringBuilder = new StringBuilder();
+    private boolean[][] roundZero = new boolean[][]{{false, false, true, true, false, false}
+            , {false, true, false, false, true, false}
+            , {true, false, false, false, false, true}
+            , {false, true, false, false, true, false}
+            , {false, false, true, true, false, false}};
+
+    public WordNumber() {
+
     }
 
 
-    private StringBuilder generate() {
+    private StringBuilder generate(String word, String number) {
+
+        boolean isRound = false;
+        if (null == number || "".equals(number)) {
+            isRound = true;
+            number = "520";
+        }
+
+        StringBuilder stringBuilder = new StringBuilder();
+
         for (int line = 0; line < 5; line++) {
             for (int wordIndex = 0; wordIndex < word.length(); wordIndex++) {
                 char wordChar = word.charAt(wordIndex);
                 stringBuilder.append("　");
+
                 if (wordIndex < number.length()) {
                     char numberChar = number.charAt(wordIndex);
                     int num = Integer.parseInt(numberChar + "");
-                    boolean[] wordRectangular = numberRectangular[num][line];
-                    for (boolean b : wordRectangular) {
+                    boolean[] wordRectangular = null;
+                    if (0 == num && isRound) {
+                        wordRectangular = roundZero[line];
+                    } else {
+                        wordRectangular = numberRectangular[num][line];
+                    }
+
+                    for (int i = 0; i < wordRectangular.length; i++) {
+                        boolean b = wordRectangular[i];
+
                         if (b) {
-                            stringBuilder.append(wordChar);
+                            if ((0 == num && isRound) && i > 2 && word.length() > 3) {
+                                stringBuilder.append(word.charAt(wordIndex + 1));
+                            } else {
+                                stringBuilder.append(wordChar);
+                            }
                         } else {
-                            if (isEnglishChar(wordChar)) {
+                            if ((0 == num && isRound) || isEnglishChar(wordChar)) {
                                 stringBuilder.append(" ");
                             } else {
                                 stringBuilder.append("　");
@@ -103,9 +125,17 @@ public class WordNumber {
 
     }
 
-    public void print() {
-        System.out.println(generate().toString());
+
+    public void print(String word, String number) {
+        Integer.parseInt(number);
+
+        System.out.println(generate(word, number).toString());
     }
+
+    public void print(String word) {
+        System.out.println(generate(word, null).toString());
+    }
+
 
     public void write2File(File file) {
 
