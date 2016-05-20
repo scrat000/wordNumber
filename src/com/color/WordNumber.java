@@ -86,7 +86,11 @@ public class WordNumber {
                         if (b) {
                             stringBuilder.append(wordChar);
                         } else {
-                            stringBuilder.append("　");
+                            if (isEnglishChar(wordChar)) {
+                                stringBuilder.append(" ");
+                            } else {
+                                stringBuilder.append("　");
+                            }
                         }
                     }
                 } else {
@@ -107,5 +111,20 @@ public class WordNumber {
 
     }
 
+    public static boolean isEnglishChar(char c) {
+        if (c <= '9' && c >= '0') {
+            return true;
+        }
+
+        if (c <= 'z' && c >= 'a') {
+            return true;
+        }
+
+        if (c <= 'Z' && c >= 'A') {
+            return true;
+        }
+
+        return false;
+    }
 
 }
